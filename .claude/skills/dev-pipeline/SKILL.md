@@ -52,6 +52,18 @@ Si la commande echoue ou ne retourne pas de valeur, `COVERAGE_BEFORE` reste vide
    - La description complete est l'input de la Phase 1
    - Deduire `{name}` apres la Phase 1 (du titre de la spec produite)
 
+### Detection automatique de reprise (sans --from)
+
+Si `$ARGUMENTS` ne contient pas `--from` mais contient un chemin vers une spec existante :
+1. Scanner les artefacts existants pour `{name}` :
+   - `docs/specs/SPEC-{name}.md` → Phase 1 terminee
+   - `docs/reviews/adversarial-SPEC-{name}.md` → Phase 2 terminee
+   - `docs/reviews/implement-{name}.md` → Phase 3 terminee
+   - `docs/reviews/review-{name}.md` → Phase 4 terminee
+2. Proposer a l'utilisateur : "Artefacts trouves jusqu'a Phase {N}. Reprendre a Phase {N+1} ? (OUI/NON)"
+3. Si OUI : equivalent a `--from {phase_suivante}`
+4. Si NON : executer le pipeline complet (ecrasement des artefacts existants apres confirmation)
+
 ## Phases
 
 ### Phase 1 -- SPEC (skip si `--from` >= challenge)
@@ -70,6 +82,8 @@ Message de progression : "Phase 1 terminee -- spec produite : docs/specs/SPEC-{n
 ---
 
 ### Phase 1b -- QUALITY GATE POST-SPEC (skip si `--from` >= challenge)
+
+> **Note reprise** : Phase 1b est skippee si `--from` >= challenge. La spec est consideree validee (elle existe deja sur disque). Si la spec a ete modifiee depuis, relancer le pipeline complet pour revalider.
 
 Checkpoint de validation utilisateur. Objectif : verifier que la spec repond au besoin avant de lancer le stress-test adversarial.
 
@@ -158,6 +172,19 @@ Lire `docs/reviews/adversarial-SPEC-{name}.md` et identifier le verdict dans la 
    - **GO** : continuer vers Phase 3
    - **GO WITH CHANGES** : traiter comme GO (max 2 cycles adversariaux) et continuer vers Phase 3
    - **NO-GO** : STOP definitif (voir ci-dessous)
+
+#### Mecanique de mise a jour Spec Rev.2
+
+1. Lire les findings MAJEURS et les recommandations du rapport adversarial
+2. Construire un diff textuel des sections a modifier (avant/apres)
+3. Presenter le diff dans la conversation :
+   > "## Modifications proposees pour SPEC-{name} (Rev.2)"
+   > {diff section par section}
+4. Demander validation utilisateur : "Appliquer ces modifications ? OUI / NON / MODIFIER"
+   - **OUI** : appliquer les modifications a `docs/specs/SPEC-{name}.md` via Edit
+   - **NON** : abandonner les modifications, continuer vers Phase 3 avec la spec Rev.1
+   - **MODIFIER** : l'utilisateur fournit ses ajustements, appliquer puis continuer
+5. L'historique Rev.1 → Rev.2 est preserve dans git (pas de fichier separe)
 
 **NO-GO** : STOP. Produire le rapport pipeline avec les raisons et pistes de resolution. Sauvegarder dans `docs/reviews/pipeline-{name}.md`. Afficher a l'utilisateur :
 - Les raisons du NO-GO (findings BLOQUANTS)

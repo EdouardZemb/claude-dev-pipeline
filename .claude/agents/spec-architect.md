@@ -12,6 +12,13 @@ Transformer une demande utilisateur (description + artefacts) en une specificati
 
 - **Template 9 sections obligatoire** : toujours produire les 9 sections definies ci-dessous
 - **Exploration codebase obligatoire** : remplir les sections 5 (fichiers concernes) et 6 (patterns existants) par exploration reelle du code (Glob/Grep/Read), jamais par supposition
+
+**Budget exploration** : pour eviter la saturation sur les grosses codebases :
+- Glob : max 10 patterns de recherche
+- Grep : max 20 recherches de contenu
+- Read : max 15 fichiers complets (privilegier les fichiers < 200 lignes)
+- Si la codebase est volumineuse (> 500 fichiers source) : declarer "Exploration partielle" dans la section 9 (zones d'ombre) et lister les aires non explorees
+
 - **V-criteres avec niveaux** : chaque V-critere de la section 8 DOIT avoir un niveau (`unit`, `integration`, `E2E`, `manual`). Privilegier `unit` et `integration` (CI-testable). Les niveaux `E2E` et `manual` sont reserves aux cas qui ne peuvent pas etre testes autrement
 - **Discovery interview 4 dimensions** : suivre la grille Probleme/Perimetre/Validation/Technique (max 4 rounds, 4 questions par round)
 - **Tracabilite** : toute regle metier doit etre tracee vers un artefact ou une reponse utilisateur. Ne pas inventer de regles
@@ -39,10 +46,11 @@ Transformer une demande utilisateur (description + artefacts) en une specificati
 
 ### Phase 2 — Discovery Interview (interactive)
 
-- 4 dimensions obligatoires : Probleme, Perimetre, Validation, Technique
+Suivre le workflow exact defini dans `.claude/skills/dev-spec/SKILL.md` Phase 2 :
+- 4 dimensions obligatoires (Probleme/Perimetre/Validation/Technique)
 - Max 4 rounds, max 4 questions par round
-- Proposer des options concretes (2-4 par question), en s'appuyant sur l'exploration codebase
-- Marquer "(Recommande)" les options que l'exploration du code suggere
+- Proposer des options concretes avec "(Recommande)" basees sur l'exploration Phase 1
+- Marquer "Non couvert" les dimensions sans reponse suffisante
 
 ### Phase 3 — Production de la spec
 

@@ -69,6 +69,11 @@ Analyser le blast radius d'un changement propose (spec ou diff), evaluer les ris
 
 **Niveau global** : le niveau le plus eleve parmi tous les criteres. En cas d'ambiguite, privilegier le niveau superieur (principe de precaution).
 
+**Comptage des modules** : additionner les modules directement et indirectement impactes.
+- Direct : fichiers listes dans la spec section 5
+- Indirect : modules qui importent les modules modifies (1 niveau de transitivite suffit)
+- Si le total (direct + indirect) depasse 4 : escalader en HIGH
+
 ## Format de sortie
 
 ```markdown

@@ -94,6 +94,8 @@ docs/
 examples/
   SPEC-example.md    Exemple de specification complete
   EXPLORE-example.md Exemple de rapport d'exploration
+  adversarial-SPEC-example.md  Exemple de rapport adversarial
+  pipeline-SPEC-example.md     Exemple de rapport pipeline
 CLAUDE.md            Exemple de CLAUDE.md projet integrant le pipeline
 ```
 
@@ -199,3 +201,18 @@ Chaque transition entre phases est gardee par un verdict (GO/NO-GO/REVISE) avec 
 ### Conformance check (V-criteres)
 
 Les criteres de validation (V-criteres) de la spec sont traces jusqu'aux tests via des markers (`@pytest.mark.spec("V1")`). Le conformance checker verifie que chaque V-critere est couvert par au moins un test.
+
+## Workflows par type de changement
+
+Le pipeline complet est concu pour les features complexes. Pour les autres cas :
+
+| Type | Workflow | Phases |
+|------|----------|--------|
+| **Feature complexe** | `/dev-pipeline` complet | 0 → 1 → 1b → 2 → 3 → 3d → 4 → 5 → 6 |
+| **Feature simple** (1-2 fichiers) | `/dev-implement` + `/dev-review` | 3 → 4 |
+| **Bugfix** | Correction directe + `/dev-review` | 4 seule |
+| **Refactoring** | `/dev-implement` (tests existants comme filet) | 3 → 4 |
+| **Documentation** | `/dev-doc` seul | 5 seule |
+| **Exploration** | `/dev-explore` seul | 0 seule |
+
+Le pipeline est un accelerateur, pas une contrainte. Adapter le niveau de formalisme au risque du changement.

@@ -195,6 +195,14 @@ Pipeline de maturation code complet, de l'exploration au commit.
 
 **Rapport** : nombre de V-criteres couverts / total, liste des manquants
 
+#### Specs documentaires
+
+Si la spec ne produit que des fichiers statiques (`.md`, `.yaml`, `.json`, config) sans code source :
+- Le Test Architect genere des **tests structurels** : existence fichiers, sections obligatoires, references valides
+- Ces tests utilisent les memes markers `@pytest.mark.spec("Vx")` que les tests fonctionnels
+- Phase 3d s'applique normalement (conformance sur les V-criteres structurels)
+- Si la spec n'a aucun V-critere : GO direct vers Phase 4 (feature purement technique)
+
 ### Phase 4 — Review
 
 **Commande** : `/dev-review`

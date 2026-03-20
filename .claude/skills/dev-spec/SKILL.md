@@ -60,6 +60,13 @@ Explorer systematiquement 4 dimensions obligatoires dans l'ordre : **Probleme ->
 Generer un document Markdown structure avec les sections suivantes :
 
 ```markdown
+---
+spec: SPEC-{name}
+date: <ISO 8601>
+version: Rev.1
+status: DRAFT
+---
+
 # Spec : [Titre court]
 
 > Genere le [date]. Source : [artefacts utilises].

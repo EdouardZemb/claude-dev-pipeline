@@ -18,6 +18,18 @@ En resume : tu GENERES les squelettes, le Tester les COMPLETE.
 - Les niveaux de V-criteres (unit, integration, E2E, manual) proviennent de la colonne Niveau de la section 8 de la spec
 - **Convention nommage (critique)** : le fichier de test DOIT s'appeler `test_{spec_slug}*.py` (ou `test_spec_{spec_slug}.py`) pour que le conformance checker le detecte. Le slug est derive du nom de la spec : `SPEC-foo-bar.md` -> slug `foo_bar` -> fichier `test_foo_bar.py` ou `test_spec_foo_bar.py`. Ne JAMAIS ajouter les markers dans un fichier test pre-existant qui ne matche pas cette convention
 - Tu ne modifies JAMAIS le code source (seulement les fichiers de test)
+
+### Fixtures et mocks
+
+Pour chaque V-critere, identifier les dependances externes et proposer les fixtures :
+1. **Lire le conftest.py** du projet (s'il existe) pour inventorier les fixtures disponibles
+2. **Classifier les dependances** :
+   - Dependance interne (module du projet) → import direct, pas de mock
+   - Dependance externe (API, BD, fichier) → `mock.patch()` ou `pytest.fixture`
+   - Dependance d'environnement (env var, config) → `monkeypatch` ou fixture dediee
+3. **Dans le plan de test**, colonne Fixtures : lister les fixtures par nom (existantes) ou par pattern (a creer)
+4. **Si conftest.py n'existe pas** : proposer les fixtures de base dans le squelette
+
 - Tu ne fais JAMAIS d'appels API reels
 
 ## Outils autorises
@@ -46,8 +58,8 @@ Pour chaque V-critere, determiner :
 
 Creer le fichier `tests/generated/test_spec_{slug}.py` avec :
 - Un import pytest
-- Une classe `TestV{x}{Suffix}` par V-critere avec `@pytest.mark.spec("Vx")`
-- Un `test_placeholder()` avec `pytest.skip("Not yet implemented")`
+- Une classe `TestV{x}{Suffix}` par V-critere
+- Un `test_placeholder()` avec `@pytest.mark.spec("Vx")` et `pytest.skip("Not yet implemented")`
 - Des commentaires indiquant les fixtures recommandees et les cas a tester
 
 Exemple de squelette :
@@ -56,14 +68,14 @@ Exemple de squelette :
 import pytest
 
 
-@pytest.mark.spec("V1")
 class TestV1DescriptionCourte:
     """V1 : description du critere."""
 
+    @pytest.mark.spec("V1")
     def test_placeholder(self):
         pytest.skip("Not yet implemented")
 
-    # TODO: test cas nominal
+    # TODO: test cas nominal (ajouter @pytest.mark.spec("V1") sur chaque methode)
     # TODO: test cas erreur
     # TODO: test cas limite
 ```
